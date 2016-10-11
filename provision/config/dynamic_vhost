@@ -1,0 +1,69 @@
+server {
+    sendfile off;
+
+	index index.html index.php;
+	set $basepath "/var/www/www";
+    
+	set $domain $host;
+
+	# check one name domain for simple application
+	if ($domain ~ "^(.[^.]*)\.dev$") {
+		set $domain $1;
+		set $rootpath "${domain}";
+		set $servername "${domain}.dev";
+	}
+
+	# check multi name domain to multi application
+	if ($domain ~ "^(.*)\.(.[^.]*)\.dev$") {
+		set $subdomain $1;
+		set $domain $2;
+		set $rootpath "${subdomain}.${domain}/www/";
+		set $servername "${subdomain}.${domain}.dev";
+	}
+
+	server_name $servername;
+
+	access_log "/var/log/nginx/server.${servername}.access.log";
+	error_log "/var/log/nginx/server.dev.error.log";
+
+	root $basepath/$rootpath;
+
+	# check file exist and send request sting to index.php
+	location / {
+		try_files $uri $uri/ /index.php?$args;
+	}
+
+	# allow php only in root index.php
+	#location ~ "^/index\.php$" {
+	# allow execute all php files
+	location ~ \.php$ {
+		try_files $uri =404;
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+		fastcgi_index index.php;
+		include fastcgi_params;
+	}
+
+	location ~ /\.js {
+        expires         1s;
+        add_header      Pragma public;
+        add_header      Cache-Control "public, must-revalidate, proxy-revalidate";
+    }
+
+
+	# disallow access to apache configs
+	location ~ /\.ht {
+		deny all;
+	}
+
+	# disallow access to git configs path
+	location ~ /\.git {
+		deny all;
+	}
+
+	# disallow access to yii code path
+	location ~ /(protected|themes/classic/views)/ {
+		deny all;
+	}
+}
