@@ -34,6 +34,10 @@ php composer-setup.php
 php -r "unlink('composer-setup.php');"
 mv composer.phar /usr/local/bin/composer
 
+# Redis
+echo "Instaling Redis"
+apt-get install redis-server -y > /dev/null
+
 # MySQL 
 #echo "Preparing MySQL"
 #apt-get install debconf-utils -y > /dev/null
