@@ -6,3 +6,4 @@ Stack:
 * php
 * composer
 * RabbitMQ
+* Redis
