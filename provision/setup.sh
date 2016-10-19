@@ -25,7 +25,7 @@ echo "Installing PHP"
 apt-get install php5-common php5-dev php5-cli php5-fpm -y > /dev/null
 
 echo "Installing PHP extensions"
-apt-get install curl php5-curl php5-gd php5-mcrypt php5-mysql -y > /dev/null
+apt-get install curl php5-curl php5-gd php5-mcrypt php5-mysql php5-memcache -y > /dev/null
 
 echo "Installing Composer"
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
